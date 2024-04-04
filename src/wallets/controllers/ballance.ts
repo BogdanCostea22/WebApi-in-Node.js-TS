@@ -17,6 +17,6 @@ export const createGetBallance = (walletService: WalletService) => {
       walletID
     );
     
-    sendResponse(actionResponse, res, 201);
+    sendResponse(actionResponse, res, 200);
   };
 };

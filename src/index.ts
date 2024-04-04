@@ -5,6 +5,7 @@ import { walletService } from "./di";
 import { createGetBallance } from "./wallets/controllers/ballance";
 import { createCredit } from "./wallets/controllers/credit";
 import { createDebit } from "./wallets/controllers/debit";
+import { globalExceptionHandler } from "./errors/global-exception-handler";
 
 const getBallanceReqHandler = createGetBallance(walletService);
 const creditReqHandler = createCredit(walletService);
@@ -25,19 +26,19 @@ const server = createServer(async (req, res) => {
   }
 
   if (walletID && req.method === "GET") {
-    getBallanceReqHandler(req, res);
+    globalExceptionHandler(req, res, getBallanceReqHandler);
     return;
   }
 
   if (walletOperation === "credit" && req.method === "POST") {
     // Credit
-    creditReqHandler(req, res);
+    globalExceptionHandler(req, res, creditReqHandler);
     return;
   }
 
   if (walletOperation === "debit" && req.method === "POST") {
     // Debit
-    debitReqHandler(req, res);
+    globalExceptionHandler(req, res, debitReqHandler);
     return;
   }
 
