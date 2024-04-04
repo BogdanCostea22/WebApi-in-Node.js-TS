@@ -1,6 +1,5 @@
 import { AppDataSource } from "./data/database";
 import { pinoLogger } from "./utils/logger";
-import { WalletsController } from "./wallets/controllers/wallets-controller";
 import {
   OperationRepository,
   OperationRepositoryImpl,
@@ -22,13 +21,8 @@ const operationRepository: OperationRepository = new OperationRepositoryImpl(
   AppDataSource,
   pinoLogger
 );
-const walletService: WalletService = new WalletServiceImpl(
+export const walletService: WalletService = new WalletServiceImpl(
   walletRepository,
   operationRepository,
-  pinoLogger
-);
-
-export const walletsController = new WalletsController(
-  walletService,
   pinoLogger
 );

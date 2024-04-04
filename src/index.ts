@@ -1,35 +1,49 @@
 import { parse as parseUrl, UrlWithParsedQuery } from "url";
-import { createServer, IncomingMessage, ServerResponse } from "http";
+import { createServer } from "http";
 import { PageNotFound } from "./errors/error";
+import { walletService } from "./di";
+import { createGetBallance } from "./wallets/controllers/ballance";
+import { createCredit } from "./wallets/controllers/credit";
+import { createDebit } from "./wallets/controllers/debit";
 import { globalExceptionHandler } from "./errors/global-exception-handler";
-import { walletsController } from "./di";
+
+const getBallanceReqHandler = createGetBallance(walletService);
+const creditReqHandler = createCredit(walletService);
+const debitReqHandler = createDebit(walletService);
 
 const server = createServer(async (req, res) => {
-  globalExceptionHandler(definePaths, req, res);
-});
-
-async function definePaths(
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
-): Promise<any> {
   const parsedUrl: UrlWithParsedQuery = parseUrl(req.url, true);
   const path: string = parsedUrl.pathname;
+
   const pathSegments: string[] = path
     .split("/")
-    .filter((value: string) => value.length > 0); // Split the path by '/'
+    .filter((value: string) => value.length > 0);
+  const walletID = pathSegments[1];
+  const walletOperation = pathSegments[2];
 
-  switch (pathSegments[0]) {
-    case walletsController.basePath: {
-      await walletsController.handleRequest(pathSegments, req, res);
-      break;
-    }
-    default: {
-      throw new PageNotFound();
-    }
+  if (pathSegments[0] !== "wallets") {
+    throw new PageNotFound();
   }
 
-  return;
-}
+  if (walletID && req.method === "GET") {
+    globalExceptionHandler(req, res, getBallanceReqHandler);
+    return;
+  }
+
+  if (walletOperation === "credit" && req.method === "POST") {
+    // Credit
+    globalExceptionHandler(req, res, creditReqHandler);
+    return;
+  }
+
+  if (walletOperation === "debit" && req.method === "POST") {
+    // Debit
+    globalExceptionHandler(req, res, debitReqHandler);
+    return;
+  }
+
+  throw new PageNotFound();
+});
 
 // starts a simple http server locally on port 3000
 server.listen(8080, "127.0.0.1", () => {

@@ -2,15 +2,15 @@ import { IncomingMessage, ServerResponse } from "http";
 import { CustomException } from "./error";
 
 export async function globalExceptionHandler(
-  action: (
+  req: IncomingMessage,
+  res: ServerResponse<IncomingMessage>,
+  requestHandler: (
     req: IncomingMessage,
     res: ServerResponse<IncomingMessage>
-  ) => Promise<any>,
-  req: IncomingMessage,
-  res: ServerResponse<IncomingMessage>
+  ) => Promise<any>
 ) {
   try {
-    await action(req, res);
+    await requestHandler(req, res);
   } catch (exc: any) {
     console.log("Caught exception", exc);
     switch (true) {

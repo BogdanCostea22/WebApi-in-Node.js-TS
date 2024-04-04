@@ -41,3 +41,12 @@ export function parseRequestBody(req: IncomingMessage): Promise<any> {
       });
     });
   }
+
+  export function sendResponse(
+    actionResponse: any,
+    res: ServerResponse<IncomingMessage>,
+    code: number
+  ) {
+    res.writeHead(code, { "Content-Type": "text/plain" }); // Set headers
+    res.end(JSON.stringify(actionResponse));
+  }
