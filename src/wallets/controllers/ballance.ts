@@ -3,6 +3,6 @@ import { WalletService } from "../services/wallets-service";
 
 export const createGetBallance = (walletService: WalletService) => {
   return async (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
-    res.end(JSON.stringify("test 123"));
+    res.end(JSON.stringify("test 123 ballance"));
   };
 };
