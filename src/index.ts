@@ -1,14 +1,16 @@
 import { parse as parseUrl, UrlWithParsedQuery } from "url";
 import { createServer, IncomingMessage, ServerResponse } from "http";
 import { PageNotFound } from "./errors/error";
-import { globalExceptionHandler } from "./errors/global-exception-handler";
-import { walletsController } from "./di";
+import { walletsController, walletService } from "./di";
 import {
   WALLET_CREDIT_OPERATION,
   WALLET_DEBIT_OPERATION,
 } from "./wallets/controllers/wallets-controller";
+import { createGetBallance } from "./wallets/controllers/ballance";
 
 const server = createServer(async (req, res) => {
+  const getBallanceReqHandler = createGetBallance(walletService);
+
   const parsedUrl: UrlWithParsedQuery = parseUrl(req.url, true);
   const path: string = parsedUrl.pathname;
 
@@ -22,8 +24,9 @@ const server = createServer(async (req, res) => {
     throw new PageNotFound();
   }
 
-  if (walletID && req.method === 'GET') {
-    //Get Wallet
+  if (walletID && req.method === "GET") {
+    getBallanceReqHandler(req, res);
+    return;
   }
   if (walletOperation === WALLET_CREDIT_OPERATION && req.method === "POST") {
     // Credit

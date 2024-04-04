@@ -22,7 +22,7 @@ const operationRepository: OperationRepository = new OperationRepositoryImpl(
   AppDataSource,
   pinoLogger
 );
-const walletService: WalletService = new WalletServiceImpl(
+export const walletService: WalletService = new WalletServiceImpl(
   walletRepository,
   operationRepository,
   pinoLogger

@@ -7,8 +7,8 @@ import { OperationRequest } from "./dto/operation-model";
 import { Logger } from "pino";
 
 const WALLETS_PATH: string = "wallets";
-const WALLET_DEBIT_OPERATION = "debit";
-const WALLET_CREDIT_OPERATION = "credit";
+export const WALLET_DEBIT_OPERATION = "debit";
+export const WALLET_CREDIT_OPERATION = "credit";
 type validator = (segments: string[]) => boolean;
 type action = (walletId: string, resp: ServerResponse<IncomingMessage>) => void;
 
@@ -44,8 +44,7 @@ export class WalletsController extends Controller {
       }
 
       case segmentsOfPath.length == 2: {
-        const actionResponse = await this.walletsService.getWallet(walletID);
-        this.formatReponse(actionResponse, res, 200);
+
         break;
       }
 
